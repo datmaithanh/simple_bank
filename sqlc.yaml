@@ -8,8 +8,11 @@ sql:
       go:
         package: "db"
         out: "./db/sqlc"
+        emit_empty_slices: true
 overrides:
     go: null
 plugins: []
 rules: []
-options: {}
+options: {
+  
+}

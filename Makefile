@@ -22,4 +22,7 @@ tosql:
 test:
 	go test -v -cover -count=1 ./...
 
-.PHONY: createdb dropdb postgres migrateup migratedown sqlc tosql test
+server:
+	go run main.go
+
+.PHONY: createdb dropdb postgres migrateup migratedown sqlc tosql test server
