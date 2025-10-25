@@ -28,6 +28,9 @@ go.work.sum
 .env
 app.env
 
+#gitignore file
+.gittignore
+
 # Editor/IDE
 # .idea/
 # .vscode/
