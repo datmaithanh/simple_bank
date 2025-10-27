@@ -10,8 +10,9 @@ import (
 )
 
 func createRandomAccount(t *testing.T) Account {
+	user:= createRandomUser(t)
 	arg := CreateAccountParams{
-		Owner:    util.RandomOwner(),
+		Owner:    user.Username,
 		Balance:  util.RandomMoney(),
 		Currency: util.RandomCurrency(),
 	}
@@ -27,43 +28,43 @@ func createRandomAccount(t *testing.T) Account {
 
 	require.NotZero(t, account.ID)
 	require.NotZero(t, account.CreatedAt)
-	
+
 	return account
 }
 
-func TestCreateAcount (t *testing.T) {
-	createRandomAccount(t);
+func TestCreateAcount(t *testing.T) {
+	createRandomAccount(t)
 }
 
-func TestGetAccount (t *testing.T) {
-	account1 := createRandomAccount(t);
-	account2, err := testQueries.GetAccount(context.Background(), account1.ID);
+func TestGetAccount(t *testing.T) {
+	account1 := createRandomAccount(t)
+	account2, err := testQueries.GetAccount(context.Background(), account1.ID)
 
-	require.NoError(t, err);
+	require.NoError(t, err)
 	require.NotEmpty(t, account2)
 
-	require.Equal(t, account1.ID, account2.ID);
-	require.Equal(t, account1.Owner, account2.Owner);
-	require.Equal(t, account1.Balance, account2.Balance);
-	require.Equal(t, account1.Currency, account2.Currency);
+	require.Equal(t, account1.ID, account2.ID)
+	require.Equal(t, account1.Owner, account2.Owner)
+	require.Equal(t, account1.Balance, account2.Balance)
+	require.Equal(t, account1.Currency, account2.Currency)
 	require.WithinDuration(t, account1.CreatedAt, account2.CreatedAt, time.Second)
 
 }
 
-func TestDeleteAccount (t *testing.T){
-	account1 := createRandomAccount(t);
-	err := testQueries.DeleteAcount(context.Background(), account1.ID);
-	require.NoError(t, err);
-	
+func TestDeleteAccount(t *testing.T) {
+	account1 := createRandomAccount(t)
+	err := testQueries.DeleteAcount(context.Background(), account1.ID)
+	require.NoError(t, err)
+
 	account2, err := testQueries.GetAccount(context.Background(), account1.ID)
-	require.Error(t, err);
+	require.Error(t, err)
 	require.EqualError(t, err, "sql: no rows in result set")
-	require.Empty(t, account2);
+	require.Empty(t, account2)
 }
 
-func TestListAccount (t *testing.T){
+func TestListAccount(t *testing.T) {
 	for i := 0; i < 10; i++ {
-		createRandomAccount(t);
+		createRandomAccount(t)
 	}
 
 	arg := ListAccountParams{
@@ -71,30 +72,30 @@ func TestListAccount (t *testing.T){
 		Offset: 5,
 	}
 
-	accounts, err := testQueries.ListAccount(context.Background(), arg);
-	require.NoError(t, err);
-	require.Len(t, accounts, 5);
+	accounts, err := testQueries.ListAccount(context.Background(), arg)
+	require.NoError(t, err)
+	require.Len(t, accounts, 5)
 
 	for _, account := range accounts {
-		require.NotEmpty(t, account);
+		require.NotEmpty(t, account)
 	}
 }
 
-func TestUpdateAccount (t *testing.T){
-	account1 := createRandomAccount(t);
+func TestUpdateAccount(t *testing.T) {
+	account1 := createRandomAccount(t)
 
 	arg := UpdateAccountParams{
-		ID: account1.ID,
+		ID:      account1.ID,
 		Balance: util.RandomMoney(),
 	}
 
-	account2, err := testQueries.UpdateAccount(context.Background(), arg);
-	require.NoError(t, err);
-	require.NotEmpty(t, account2);
+	account2, err := testQueries.UpdateAccount(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, account2)
 
-	require.Equal(t, account1.ID, account2.ID);
-	require.Equal(t, account1.Owner, account2.Owner);
-	require.Equal(t, arg.Balance, account2.Balance);
-	require.Equal(t, account1.Currency, account2.Currency);
+	require.Equal(t, account1.ID, account2.ID)
+	require.Equal(t, account1.Owner, account2.Owner)
+	require.Equal(t, arg.Balance, account2.Balance)
+	require.Equal(t, account1.Currency, account2.Currency)
 	require.WithinDuration(t, account1.CreatedAt, account2.CreatedAt, time.Second)
 }
